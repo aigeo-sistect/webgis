@@ -754,3 +754,95 @@ function fnc__specialcol_(values, context) {
 function fnc_project_color(values, context) {
     return false;
 };
+
+
+
+function exp_Papersbyyear_1rule0_eval_expression(context) {
+    // anno >= 1960 AND anno < 1970
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 1960) && (feature.properties['anno']  < 1970));
+    } else {
+        return ((feature['anno']  >= 1960) && (feature['anno']  < 1970));
+    }
+}
+
+
+function exp_Papersbyyear_1rule1_eval_expression(context) {
+    // anno >= 1970 AND anno < 1980
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 1970) && (feature.properties['anno']  < 1980));
+    } else {
+        return ((feature['anno']  >= 1970) && (feature['anno']  < 1980));
+    }
+}
+
+
+function exp_Papersbyyear_1rule2_eval_expression(context) {
+    // anno >= 1980 AND anno < 1990
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 1980) && (feature.properties['anno']  < 1990));
+    } else {
+        return ((feature['anno']  >= 1980) && (feature['anno']  < 1990));
+    }
+}
+
+
+function exp_Papersbyyear_1rule3_eval_expression(context) {
+    // anno >= 1990 AND anno < 2000
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 1990) && (feature.properties['anno']  < 2000));
+    } else {
+        return ((feature['anno']  >= 1990) && (feature['anno']  < 2000));
+    }
+}
+
+
+function exp_Papersbyyear_1rule4_eval_expression(context) {
+    // anno >= 2000 AND anno < 2010
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 2000) && (feature.properties['anno']  < 2010));
+    } else {
+        return ((feature['anno']  >= 2000) && (feature['anno']  < 2010));
+    }
+}
+
+
+function exp_Papersbyyear_1rule5_eval_expression(context) {
+    // anno >= 2010 AND anno < 2020
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 2010) && (feature.properties['anno']  < 2020));
+    } else {
+        return ((feature['anno']  >= 2010) && (feature['anno']  < 2020));
+    }
+}
+
+
+function exp_Papersbyyear_1rule6_eval_expression(context) {
+    // anno >= 2020 AND anno < 2030
+
+    var feature = context.feature;
+    
+    if (feature.properties) {
+        return ((feature.properties['anno']  >= 2020) && (feature.properties['anno']  < 2030));
+    } else {
+        return ((feature['anno']  >= 2020) && (feature['anno']  < 2030));
+    }
+}

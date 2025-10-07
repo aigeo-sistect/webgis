@@ -11,10 +11,8 @@
         <link rel="stylesheet" href="css/L.Control.Locate.min.css">
         <link rel="stylesheet" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/MarkerCluster.css">
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/leaflet-search.css">
-        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
@@ -24,7 +22,7 @@
             margin: 0;
         }
         </style>
-        <title>AIGeo WG SISTEC</title>
+        <title>WebGIS of the AIGeo Working Group "SISTECT"</title>
     </head>
     <body>
         <div id="map">
@@ -40,11 +38,10 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet.photon.js"></script>
         <script src="js/leaflet-measure.js"></script>
-        <script src="js/leaflet.markercluster.js"></script>
         <script src="js/leaflet-search.js"></script>
-        <script src="data/PapersAOI_1.js"></script>
+        <script src="data/Papersbyyear_1.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -63,7 +60,7 @@
         }
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        })
+        }).fitBounds([[36.2631165266189,1.3457490854849565],[47.89226213137745,23.677825158339868]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -95,14 +92,14 @@
 				popup._contentNode.classList.remove('media');
 			}
 		}
-        var title = new L.Control({'position':'bottomleft'});
+        var title = new L.Control({'position':'topleft'});
         title.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info');
             this.update();
             return this._div;
         };
         title.update = function () {
-            this._div.innerHTML = '<h2>AIGeo WG SISTEC</h2>';
+            this._div.innerHTML = '<h2>WebGIS of the AIGeo Working Group "SISTECT"</h2>';
         };
         title.addTo(map);
         var abstract = new L.Control({'position':'bottomleft'});
@@ -110,14 +107,20 @@
             this._div = L.DomUtil.create('div',
             'leaflet-control abstract');
             this._div.id = 'abstract'
-
-                abstract.show();
+                this._div.setAttribute("onmouseenter", "abstract.show()");
+                this._div.setAttribute("onmouseleave", "abstract.hide()");
+                this.hide();
                 return this._div;
             };
+            abstract.hide = function () {
+                this._div.classList.remove("abstractUncollapsed");
+                this._div.classList.add("abstract");
+                this._div.innerHTML = 'i'
+            }
             abstract.show = function () {
                 this._div.classList.remove("abstract");
                 this._div.classList.add("abstractUncollapsed");
-                this._div.innerHTML = 'Database of papers about italian morphotectonics.';
+                this._div.innerHTML = 'WebGIS of the AIGeo Working Group "Integrated systems and technologies for morphotectonic analysis"<br />Database of papers about italian morphotectonics.<br /><br />WebGIS del gruppo di lavoro AIGeo "Sistemi e tecnologie integrate per l’analisi morfotettonica" (SISTECT)<br />Banca dati delle pubblicazioni circa la morfotettonica italiana.';
         };
         abstract.addTo(map);
         var zoomControl = L.control.zoom({
@@ -136,9 +139,6 @@
         document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
-            if (bounds_group.getLayers().length) {
-                map.fitBounds(bounds_group.getBounds());
-            }
         }
         map.createPane('pane_GoogleSatellite_0');
         map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
@@ -153,7 +153,7 @@
         });
         layer_GoogleSatellite_0;
         map.addLayer(layer_GoogleSatellite_0);
-        function pop_PapersAOI_1(feature, layer) {
+        function pop_Papersbyyear_1(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (var i in e.target._eventParents) {
@@ -166,64 +166,49 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Title</th>\
-                        <td class="visible-with-data" id="Titolo">' + (feature.properties['Titolo'] !== null ? autolinker.link(String(feature.properties['Titolo']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="lingua" colspan="2"><strong>Language</strong><br />' + (feature.properties['lingua'] !== null ? autolinker.link(String(feature.properties['lingua']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Authors</th>\
-                        <td class="visible-with-data" id="Autori">' + (feature.properties['Autori'] !== null ? autolinker.link(String(feature.properties['Autori']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="titolo" colspan="2"><strong>Title</strong><br />' + (feature.properties['titolo'] !== null ? autolinker.link(String(feature.properties['titolo']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Year</th>\
-                        <td class="visible-with-data" id="Anno">' + (feature.properties['Anno'] !== null ? autolinker.link(String(feature.properties['Anno']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="autori" colspan="2"><strong>Authors</strong><br />' + (feature.properties['autori'] !== null ? autolinker.link(String(feature.properties['autori']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Journal</th>\
-                        <td class="visible-with-data" id="Rivista">' + (feature.properties['Rivista'] !== null ? autolinker.link(String(feature.properties['Rivista']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="anno" colspan="2"><strong>Year</strong><br />' + (feature.properties['anno'] !== null ? autolinker.link(String(feature.properties['anno']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Volume</th>\
-                        <td class="visible-with-data" id="Volume">' + (feature.properties['Volume'] !== null ? autolinker.link(String(feature.properties['Volume']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="rivista" colspan="2"><strong>Journal / Book / Conference</strong><br />' + (feature.properties['rivista'] !== null ? autolinker.link(String(feature.properties['rivista']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Pages</th>\
-                        <td class="visible-with-data" id="Pagine">' + (feature.properties['Pagine'] !== null ? autolinker.link(String(feature.properties['Pagine']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="volume" colspan="2"><strong>Volume</strong><br />' + (feature.properties['volume'] !== null ? autolinker.link(String(feature.properties['volume']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Link</th>\
-                        <td class="visible-with-data" id="Link">' + (feature.properties['Link'] !== null ? autolinker.link(String(feature.properties['Link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="pagine" colspan="2"><strong>Pages / Article</strong><br />' + (feature.properties['pagine'] !== null ? autolinker.link(String(feature.properties['pagine']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #1</th>\
-                        <td class="visible-with-data" id="Keyword1">' + (feature.properties['Keyword1'] !== null ? autolinker.link(String(feature.properties['Keyword1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="link" colspan="2"><strong>Link</strong><br />' + (feature.properties['link'] !== null ? autolinker.link(String(feature.properties['link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #2</th>\
-                        <td class="visible-with-data" id="Keyword2">' + (feature.properties['Keyword2'] !== null ? autolinker.link(String(feature.properties['Keyword2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword1" colspan="2"><strong>Keyword #1</strong><br />' + (feature.properties['keyword1'] !== null ? autolinker.link(String(feature.properties['keyword1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #3</th>\
-                        <td class="visible-with-data" id="Keyword3">' + (feature.properties['Keyword3'] !== null ? autolinker.link(String(feature.properties['Keyword3']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword2" colspan="2"><strong>Keyword #2</strong><br />' + (feature.properties['keyword2'] !== null ? autolinker.link(String(feature.properties['keyword2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #4</th>\
-                        <td class="visible-with-data" id="Keyword4">' + (feature.properties['Keyword4'] !== null ? autolinker.link(String(feature.properties['Keyword4']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword3" colspan="2"><strong>Keyword #3</strong><br />' + (feature.properties['keyword3'] !== null ? autolinker.link(String(feature.properties['keyword3']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #5</th>\
-                        <td class="visible-with-data" id="Keyword5">' + (feature.properties['Keyword5'] !== null ? autolinker.link(String(feature.properties['Keyword5']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword4" colspan="2"><strong>Keyword #4</strong><br />' + (feature.properties['keyword4'] !== null ? autolinker.link(String(feature.properties['keyword4']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #6</th>\
-                        <td class="visible-with-data" id="Keyword6">' + (feature.properties['Keyword6'] !== null ? autolinker.link(String(feature.properties['Keyword6']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword5" colspan="2"><strong>Keyword #5</strong><br />' + (feature.properties['keyword5'] !== null ? autolinker.link(String(feature.properties['keyword5']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Keyword #7</th>\
-                        <td class="visible-with-data" id="Keyword7">' + (feature.properties['Keyword7'] !== null ? autolinker.link(String(feature.properties['Keyword7']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword6" colspan="2"><strong>Keyword #6</strong><br />' + (feature.properties['keyword6'] !== null ? autolinker.link(String(feature.properties['keyword6']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Language</th>\
-                        <td class="visible-with-data" id="Lingua">' + (feature.properties['Lingua'] !== null ? autolinker.link(String(feature.properties['Lingua']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="keyword7" colspan="2"><strong>Keyword #7</strong><br />' + (feature.properties['keyword7'] !== null ? autolinker.link(String(feature.properties['keyword7']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -232,10 +217,15 @@
 			});
 			layer.bindPopup(content, { maxHeight: 400 });
         }
-
-        function style_PapersAOI_1_0() {
-            return {
-                pane: 'pane_PapersAOI_1',
+        function style_Papersbyyear_1_0(feature) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Start of if blocks and style check logic
+            if (exp_Papersbyyear_1rule0_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
                 radius: 8.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -245,46 +235,132 @@
                 weight: 2.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(255,255,255,1.0)',
+                fillColor: 'rgba(255,0,0,1.0)',
                 interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule1_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule2_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,0,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule3_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,255,0,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule4_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,255,255,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule5_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,255,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_Papersbyyear_1rule6_eval_expression(context)) {
+                  return {
+                pane: 'pane_Papersbyyear_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,0,255,1.0)',
+                interactive: true,
+            };
+                }
+            else {
+                return {fill: false, stroke: false};
             }
         }
-        map.createPane('pane_PapersAOI_1');
-        map.getPane('pane_PapersAOI_1').style.zIndex = 401;
-        map.getPane('pane_PapersAOI_1').style['mix-blend-mode'] = 'normal';
-        var layer_PapersAOI_1 = new L.geoJson(json_PapersAOI_1, {
+        map.createPane('pane_Papersbyyear_1');
+        map.getPane('pane_Papersbyyear_1').style.zIndex = 401;
+        map.getPane('pane_Papersbyyear_1').style['mix-blend-mode'] = 'normal';
+        var layer_Papersbyyear_1 = new L.geoJson(json_Papersbyyear_1, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_PapersAOI_1',
-            layerName: 'layer_PapersAOI_1',
-            pane: 'pane_PapersAOI_1',
-            onEachFeature: pop_PapersAOI_1,
+            dataVar: 'json_Papersbyyear_1',
+            layerName: 'layer_Papersbyyear_1',
+            pane: 'pane_Papersbyyear_1',
+            onEachFeature: pop_Papersbyyear_1,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_PapersAOI_1_0(feature));
+                return L.circleMarker(latlng, style_Papersbyyear_1_0(feature));
             },
         });
-        var cluster_PapersAOI_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_PapersAOI_1.addLayer(layer_PapersAOI_1);
-
-        bounds_group.addLayer(layer_PapersAOI_1);
-        cluster_PapersAOI_1.addTo(map);
-        var osmGeocoder = new L.Control.Geocoder({
-            collapsed: true,
-            position: 'topleft',
-            text: 'Search',
-            title: 'Testing'
-        }).addTo(map);
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .className += ' fa fa-search';
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .title += 'Search for a place';
+        bounds_group.addLayer(layer_Papersbyyear_1);
+        map.addLayer(layer_Papersbyyear_1);
         var overlaysTree = [
-            {label: '<img src="legend/PapersAOI_1.png" /> Papers AOI', layer: cluster_PapersAOI_1},
+            {label: 'Papers by year<br /><table><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_196019690.png" /></td><td>1960 - 1969</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_197019791.png" /></td><td>1970 - 1979</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_198019892.png" /></td><td>1980 - 1989</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_199019993.png" /></td><td>1990 - 1999</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_200020094.png" /></td><td>2000 - 2009</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_201020195.png" /></td><td>2010 - 2019</td></tr><tr><td style="text-align: center;"><img src="legend/Papersbyyear_1_202020296.png" /></td><td>2020 - 2029</td></tr></table>', layer: layer_Papersbyyear_1},
             {label: "Google Satellite", layer: layer_GoogleSatellite_0, radioGroup: 'bm' },]
         var lay = L.control.layers.tree(null, overlaysTree,{
             //namedToggle: true,
@@ -293,17 +369,70 @@
             //openedSymbol: '&#8863; &#x1f5c1;',
             //collapseAll: 'Collapse all',
             //expandAll: 'Expand all',
-            collapsed: true,
+            collapsed: false, 
         });
         lay.addTo(map);
+		document.addEventListener("DOMContentLoaded", function() {
+            // set new Layers List height which considers toggle icon
+            function newLayersListHeight() {
+                var layerScrollbarElement = document.querySelector('.leaflet-control-layers-scrollbar');
+                if (layerScrollbarElement) {
+                    var layersListElement = document.querySelector('.leaflet-control-layers-list');
+                    var originalHeight = layersListElement.style.height 
+                        || window.getComputedStyle(layersListElement).height;
+                    var newHeight = parseFloat(originalHeight) - 50;
+                    layersListElement.style.height = newHeight + 'px';
+                }
+            }
+            var isLayersListExpanded = true;
+            var controlLayersElement = document.querySelector('.leaflet-control-layers');
+            var toggleLayerControl = document.querySelector('.leaflet-control-layers-toggle');
+            // toggle Collapsed/Expanded and apply new Layers List height
+            toggleLayerControl.addEventListener('click', function() {
+                if (isLayersListExpanded) {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                } else {
+                    controlLayersElement.classList.add('leaflet-control-layers-expanded');
+                }
+                isLayersListExpanded = !isLayersListExpanded;
+                newLayersListHeight()
+            });	
+			// apply new Layers List height if toggle layerstree
+			if (controlLayersElement) {
+				controlLayersElement.addEventListener('click', function(event) {
+					var toggleLayerHeaderPointer = event.target.closest('.leaflet-layerstree-header-pointer span');
+					if (toggleLayerHeaderPointer) {
+						newLayersListHeight();
+					}
+				});
+			}
+            // Collapsed/Expanded at Start to apply new height
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            // Collapsed touch/small screen
+            var isSmallScreen = window.innerWidth < 650;
+            if (isSmallScreen) {
+                setTimeout(function() {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                    isLayersListExpanded = !isLayersListExpanded;
+                }, 500);
+            }  
+        });       
         setBounds();
         map.addControl(new L.Control.Search({
-            layer: cluster_PapersAOI_1,
+            layer: layer_Papersbyyear_1,
             initial: false,
             hideMarkerOnCollapse: true,
-            propertyName: 'Titolo'}));
-        document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars';
+            propertyName: 'titolo'}));
+        if (typeof url === 'undefined') {
+            document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars';
+        } else {
+            document.getElementsByClassName('search-button')[1].className += ' fa fa-binoculars';
+        }
         </script>
     </body>
 </html>
